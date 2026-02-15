@@ -6,10 +6,13 @@ DATA_DONE
 * Create ESPN elig DB
 * Create Player Info
 * Projections
+* Contracts
 
 CURRENT
+Isolate outputs
+Archive init process
+
 Cleanup folder structure [Reference](https://gist.github.com/ericmjl/27e50331f24db3e8f957d1fe7bbbe510)
-col_config.py 
 create_id_map.py 
 create_info.py 
 create_pick_matrix.py 
@@ -22,13 +25,11 @@ process_espn_eligibility.py
 
 NEXT
 Cleanup process (all column names snake_case)
-Contracts:
-  Cleanup process
-  Create ID year_number_type?
-Create lineup DB (Check w/ Bob)
+Create lineup DB (Check w/ Bob) ()
 Handle new fangraphs prospects when it drops
 Get fg data programatically?
 <!-- https://www.fangraphs.com/api/projections?type=atc&stats=bat&pos=all&team=0&players=0&lg=all&z=1770917651291&download=1 -->
+Update missing mlb_ids
 
 build a runner?
 
