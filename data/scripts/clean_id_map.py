@@ -26,9 +26,8 @@ df[ESPN_ID] = df[ESPN_ID].astype('Int64')
 
 missing_mlb_df = df[df[MLB_ID].isna() & ~df[ESPN_ID].isna()]
 missing_espn_df = df[~df[MLB_ID].isna() & df[ESPN_ID].isna()]
-print(missing_espn_df.head())
 
 # todo handle fixes
 
 missing_mlb_df.to_csv('../output_to_process/missing_mlb_id.csv')
-df.to_csv('../output_final/tj_id_map.csv')
+df.to_csv('../output_final/tj_id_map.csv', index=False)

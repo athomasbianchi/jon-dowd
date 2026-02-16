@@ -88,4 +88,6 @@ export_df = export_df[
         ARB_RATE,
     ]
 ]
+export_df[CONTRACT_YEARS] = export_df[CONTRACT_YEARS].astype('Int64')
+export_df[AA_OPTIONS] = export_df[AA_OPTIONS].astype('Int64')
 export_df.to_csv("../output_final/contracts.csv", index=False)

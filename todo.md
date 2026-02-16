@@ -30,7 +30,7 @@ Handle new fangraphs prospects when it drops
 Get fg data programatically?
 <!-- https://www.fangraphs.com/api/projections?type=atc&stats=bat&pos=all&team=0&players=0&lg=all&z=1770917651291&download=1 -->
 Update missing mlb_ids
-
+Update org / age / etc for intl and prospects
 build a runner?
 
 LATER DATA
