@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 
 export const App = () => {
   const [players, setPlayers] = useState([])
+  const [yb, setYB] = useState([])
 
 
   const getPlayers = async () => {
@@ -16,17 +17,30 @@ export const App = () => {
     // setPlayers(player_universe)
   }
 
+  const getYB = async () => {
+    const { data: yb, error } = await supabase
+      .from('yb')
+      .select()
+      setYB(yb)
+      console.log(yb)
+  }
+
   useEffect(() => {
     getPlayers()
+    getYB()
   }, [])
 
   
 
-  console.log(players)
   return (
     <div className="App">
-      {players.map(player => (
-        <div>{player.NameASCII}</div>
+      {yb.sort((a,b) => (Number(a.player_age) - Number(b.player_age)) ).map(player => (
+        <div key={player.tj_id}>
+        <span
+        >{player.name} </span>
+        <span>{player.player_mlb_org} </span>
+        <span>{player.player_age}</span>
+        </div>
       ))}
     </div>
   )
