@@ -5,15 +5,15 @@ import { useState, useEffect } from "react";
 export const App = () => {
   const [players, setPlayers] = useState([])
   const [yb, setYB] = useState([])
+  const [teams, setTeams] = useState([])
 
 
   const getPlayers = async () => {
-    const { data: player_universe, error } = await supabase
-      .from('player_universe')
+    const { data: players, error } = await supabase
+      .from('players')
       .select()
-      .limit(10)
-    console.log(player_universe)
-    setPlayers(player_universe)
+    console.log(players)
+    setPlayers(players)
     // setPlayers(player_universe)
   }
 
@@ -22,12 +22,20 @@ export const App = () => {
       .from('yb')
       .select()
       setYB(yb)
-      console.log(yb)
+  }
+
+  const getTeams = async () => {
+    const { data: teams, error } = await supabase
+      .from('teams')
+      .select()
+      .eq('team_level', 'majors')
+    console.log(teams)
   }
 
   useEffect(() => {
     getPlayers()
     getYB()
+    getTeams()
   }, [])
 
   

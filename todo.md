@@ -10,6 +10,18 @@ DATA_DONE
 - Contracts
 
 CURRENT
+Frontend
+
+FRONTEND
+Roster View
+  - contracts
+  - total
+Contracts View
+Teams View
+FAs
+Auction View
+Arb View
+Mobile Views
 
 DATA_NEXT
 Archive init process
@@ -42,13 +54,7 @@ update: (projections, positions, teams,)
 grow: (id_map )
 Get projections automatically?
 
-FRONTEND
-Roster View
-Contracts View
-Team View
-Auction View
-Arb View
-Mobile Views
+
 
 - Add Logins?
 
