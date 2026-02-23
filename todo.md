@@ -11,6 +11,7 @@ DATA_DONE
 
 CURRENT
 Frontend
+* Add ESPN & fg projections to db
 
 FRONTEND
 Roster View
