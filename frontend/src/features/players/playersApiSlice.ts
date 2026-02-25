@@ -11,6 +11,16 @@ export type Player = {
   contract_years: number
   player_mlb_org: string
   player_pos: string
+  team_id: number
+  c: boolean
+  '1b': boolean
+  '2b': boolean
+  '3b': boolean
+  ss: boolean
+  of: boolean
+  util: boolean
+  sp: boolean
+  rp: boolean
 }
 
 type PlayersApiResponse = {

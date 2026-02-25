@@ -29,7 +29,7 @@ export const Players = (): JSX.Element | null => {
     isSuccess
   } = useGetPlayersQuery();
   const [searchString, setSearchString] = useState('')
-  const [posFilter, setPosFilter] = useState('')
+  const [posFilter, setPosFilter] = useState('batters')
   const [allPlayers, setAllPlayers] = useState(false)
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -47,21 +47,46 @@ export const Players = (): JSX.Element | null => {
   }
 
   const handlePositionClick = (pos: string) => {
-    console.log(pos)
     if (pos === posFilter) {
       setPosFilter('')
     }
     setPosFilter(pos)
   }
 
-  const filteredPlayers: Player[] = Array.isArray(players)
-    ? players.filter((player: Player) =>
-      player.name_ascii
-        .toLowerCase()
-        .includes(searchString.toLowerCase())
-    ) as Player[]
-    : [];
+  const nameFilter = (player: Player) => {
+    return player.name_ascii
+      .toLowerCase().trim()
+      .includes(searchString.toLowerCase().trim())
+  }
 
+  const positionFilter = (player: Player) => {
+    if (!posFilter) return true;
+    const posObj: Record<string, string[]> = {
+      'batters': ['c', '1b', '2b', '3b', 'ss', 'of', 'util'],
+      'pitchers': ['sp', 'rp'],
+      'c': ['c'],
+      '1b': ['1b'],
+      '2b': ['2b'],
+      '3b': ['3b'],
+      'ss': ['ss'],
+      'of': ['of'],
+      'ut': ['util'],
+      'sp': ['sp'],
+      'rp': ['rp']
+    }
+
+    const positionsArray: string[] = posObj[posFilter];
+    return positionsArray.some(pos => player[pos])
+  }
+
+  const faFilter = (player: Player) => {
+    if (allPlayers) return true
+    return !player.team_id
+  }
+
+  const filteredPlayers: Player[] = Array.isArray(players)
+    ? players.filter(nameFilter).filter(positionFilter).filter(faFilter) as Player[]
+    : [];
 
   return (
     <div
@@ -113,18 +138,11 @@ export const Players = (): JSX.Element | null => {
           </div>
         </div>
         <div
-          // result
           className="flex flex-col grow overflow-y-scroll"
         >
           {filteredPlayers.map(player => {
             return (
-              <div
-                key={player.tj_id}
-                className="flex flex-row">
-                {player.name}{" "}
-                {player.player_mlb_org}{" "}
-                {player.player_pos}
-              </div>
+              <FaPlayer player={player} key={player.tj_id} />
             )
           })}
         </div>
@@ -135,7 +153,7 @@ export const Players = (): JSX.Element | null => {
 
 type FilterButtonProps = {
   children: React.ReactNode
-  clickFunction: Function
+  clickFunction: React.MouseEventHandler<HTMLButtonElement>
   className?: string
 }
 
@@ -147,8 +165,38 @@ const FilterButton = ({ children, className, clickFunction, ...props }: FilterBu
   )
 
   return (
-    <button className={allClasses} onClick={clickFunction} {...props}>
+    <button
+      className={allClasses}
+      onClick={clickFunction} {...props}>
       {children}
     </button>
+  )
+}
+
+type FaPlayerProps = {
+  player: Player
+}
+
+const TEAMS = {
+  '1': 'CR',
+  '2': 'SF',
+  '3': 'BS',
+  '4': 'RW',
+  '5': 'DET',
+  '6': 'ORl',
+  '7': 'SZ',
+  '8': 'DCT',
+  '9': 'YB',
+  '10': 'CS',
+  '19': 'MJ',
+  '20': 'WCS',
+}
+
+const FaPlayer = ({ player }: FaPlayerProps): JSX.Element => {
+
+  return (
+    <div
+      onClick={() => {console.log(player.tj_id)}}
+    >{player.name} {player.player_pos} {player.player_mlb_org} {TEAMS[String(player.team_id)]}</div>
   )
 }

@@ -9,9 +9,16 @@ DATA_DONE
 - Projections
 - Contracts
 
+FRONTEND DONE
+- Players View
+
+
 CURRENT
 Frontend
-* Add ESPN & fg projections to db
+* Create Projections Tabl
+* Add ESPN & fg projections to player view
+* Update org / team with 
+
 
 FRONTEND
 Roster View
