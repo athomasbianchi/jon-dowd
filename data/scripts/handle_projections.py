@@ -1,5 +1,7 @@
 import pandas as pd
 
+#TODO import column headers
+
 # Batting
 # Runs Scored (R)1
 # Singles (1B)1
@@ -24,7 +26,7 @@ import pandas as pd
 
 pd.options.display.float_format = "{:.2f}".format
 
-atc_h = pd.read_csv("../input_download/2026_atc_h.csv")
+atc_h = pd.read_csv("./input_download/2026_atc_h.csv")
 atc_h["fp"] = (
     atc_h["1B"]
     + atc_h["2B"] * 2
@@ -40,7 +42,7 @@ atc_h["fp/g"] = atc_h["fp"] / atc_h["G"]
 atc_h["fp/pa"] = atc_h["fp"] / atc_h["PA"]
 atc_h.sort_values(by="fp/g", ascending=False, inplace=True)
 
-batx_h = pd.read_csv("../input_download/2026_batx_h.csv")
+batx_h = pd.read_csv("./input_download/2026_batx_h.csv")
 batx_h["fp"] = (
     batx_h["1B"]
     + batx_h["2B"] * 2
@@ -56,7 +58,7 @@ batx_h["fp/g"] = batx_h["fp"] / batx_h["G"]
 batx_h["fp/pa"] = batx_h["fp"] / batx_h["PA"]
 batx_h.sort_values(by="fp/g", ascending=False, inplace=True)
 
-atc_p = pd.read_csv("../input_download/2026_atc_p.csv")
+atc_p = pd.read_csv("./input_download/2026_atc_p.csv")
 atc_p["fp"] = (
     atc_p["IP"] * 2
     + atc_p["H"] * -0.5
@@ -73,7 +75,7 @@ atc_p["fp/gs"] = atc_p["fp"] / atc_p["GS"]
 atc_p.sort_values(by="fp", ascending=False, inplace=True)
 # print(atc_p.head(20))
 
-oopsy_p = pd.read_csv("../input_download/2026_oopsy_p.csv")
+oopsy_p = pd.read_csv("./input_download/2026_oopsy_p.csv")
 oopsy_p["fp"] = (
     oopsy_p["IP"] * 2
     + oopsy_p["H"] * -0.5
@@ -123,18 +125,24 @@ players = players.groupby("PlayerId").sum().reset_index()
 players.sort_values(by="fp_avg", ascending=False, inplace=True)
 
 # add tj_id & espnId
-player_map = pd.read_csv('../output/tj_id_map.csv')
-player_map[["MLBAMID", "espnId"]] = player_map[["MLBAMID", "espnId"]].astype('Int64')
-proj_w_ids = pd.merge(left=players, right=player_map, left_on='PlayerId', right_on='fgId', indicator=True, how='inner')
-proj_w_ids = proj_w_ids[['tjid', 'fgId', 'espnId', 'NameASCII_y', 'fp_atc', 'fp_alt', 'dif', 'fp_avg']]
-proj_w_ids.rename(columns={'NameASCII_y': 'NameASCII'}, inplace=True)
+player_map = pd.read_csv('./output_final/tj_id_map.csv')
+player_map[["mlb_id", "espn_id"]] = player_map[["mlb_id", "espn_id"]].astype('Int64')
+proj_w_ids = pd.merge(left=players, right=player_map, left_on='PlayerId', right_on='fg_id', indicator=True, how='inner')
+proj_w_ids = proj_w_ids[['tj_id', 'fg_id', 'espn_id', 'name_ascii', 'fp_atc', 'fp_alt', 'dif', 'fp_avg']]
 
 # add espn projections by espn Id
-espn_proj = pd.read_csv('../input_download/espn_proj.csv')
-proj_all = pd.merge(how='inner', left=proj_w_ids, right=espn_proj, left_on='espnId', right_on='id')
-proj_all = proj_all[['tjid', 'fgId', 'espnId', 'NameASCII', 'fp_atc', 'fp_alt', 'dif', 'fp_avg', 'proj']]
+espn_proj = pd.read_csv('./input_download/espn_proj.csv')
+espn_proj['id'] = espn_proj['id'].astype('Int64')
+print(proj_w_ids.columns)
+print(espn_proj.columns)
+proj_all = pd.merge(how='inner', left=proj_w_ids, right=espn_proj, left_on='espn_id', right_on='id')
+proj_all = proj_all[['tj_id', 'fg_id', 'espn_id', 'name_ascii', 'fp_atc', 'fp_alt', 'dif', 'fp_avg', 'proj', 'total_25']]
 proj_all.rename(columns={'proj': 'fp_e', 'dif': 'alt-atc'}, inplace=True)
 proj_all['atc-e'] = proj_all['fp_atc'] - proj_all['fp_e']
 proj_all.sort_values(by='fp_avg', ascending=False, inplace=True)
 
-proj_all.to_csv('../output/projections.csv')
+# print(proj_all.columns)
+proj_all = proj_all[['tj_id', 'fp_atc', 'fp_alt', 'alt-atc', 'fp_avg', 'fp_e', 'atc-e', 'total_25']]
+print(proj_all.head(5))
+
+proj_all.to_csv('./output_final/projections.csv', index=False)

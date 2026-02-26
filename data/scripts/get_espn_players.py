@@ -1,7 +1,5 @@
 import requests
 import pandas as pd
-import json
-from sqlalchemy import create_engine
 
 url = "https://lm-api-reads.fantasy.espn.com/apis/v3/games/flb/seasons/2026/segments/0/leagues/12577"
 
