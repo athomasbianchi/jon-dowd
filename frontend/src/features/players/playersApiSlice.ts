@@ -21,6 +21,8 @@ export type Player = {
   util: boolean
   sp: boolean
   rp: boolean
+  fp_e: number
+  total_25: number
 }
 
 type PlayersApiResponse = {
@@ -41,8 +43,9 @@ export const playersApiSlice = createApi({
           const { data, error } = await supabase
             .from('players')
             .select("*")
-            .order('contract_dollars', { ascending: false, nullsFirst: false })
-            .order('contract_years', { ascending: false, nullsFirst: false })
+            .order('fp_e', { ascending: false, nullsFirst: false })
+            // .order('contract_dollars', { ascending: false, nullsFirst: false })
+            // .order('contract_years', { ascending: false, nullsFirst: false })
             // .range(range_low, range_high)
           if (error) {
             throw new Error(error.message || "Unknown error occurred while fetching players");

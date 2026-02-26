@@ -202,7 +202,8 @@ const FaPlayer = ({ player }: FaPlayerProps): JSX.Element => {
       <div
         className="w-1/3"
       >{player.name} {playerPosString(player)} {player.player_mlb_org}</div>
-      <div>{TEAMS[String(player.team_id)] || 'FA'}</div>
+      <div className="w-1/6">{TEAMS[String(player.team_id)] || 'FA'}</div>
+      <div className="w-1/6">{player.fp_e}</div>
     </div>
   )
 }
