@@ -76,7 +76,7 @@ export const Players = (): JSX.Element | null => {
     }
 
     const positionsArray: string[] = posObj[posFilter];
-    return positionsArray.some(pos => player[pos])
+    return positionsArray.some(pos => player[pos as keyof Player])
   }
 
   const faFilter = (player: Player) => {
@@ -138,7 +138,7 @@ export const Players = (): JSX.Element | null => {
           </div>
         </div>
         <div
-          className="flex flex-col grow overflow-y-scroll"
+          className="flex-col flex grow overflow-y-scroll"
         >
           {filteredPlayers.map(player => {
             return (
@@ -177,7 +177,7 @@ type FaPlayerProps = {
   player: Player
 }
 
-const TEAMS = {
+const TEAMS: Record<string, string> = {
   '1': 'CR',
   '2': 'SF',
   '3': 'BS',
@@ -196,7 +196,33 @@ const FaPlayer = ({ player }: FaPlayerProps): JSX.Element => {
 
   return (
     <div
-      onClick={() => {console.log(player.tj_id)}}
-    >{player.name} {player.player_pos} {player.player_mlb_org} {TEAMS[String(player.team_id)]}</div>
+      className="flex flex-row"
+      onClick={() => { console.log(player.tj_id) }}
+    >
+      <div
+        className="w-1/3"
+      >{player.name} {playerPosString(player)} {player.player_mlb_org}</div>
+      <div>{TEAMS[String(player.team_id)] || 'FA'}</div>
+    </div>
   )
+}
+
+const playerPosString = (player: Player): string => {
+  const hittingPos = ['c', '3b', '2b', 'ss', '1b', 'of']
+  let str = '';
+  hittingPos.forEach(pos => {
+    if (player[pos as keyof Player]) {
+      if (str.length === 0) str = str.concat(pos.toUpperCase())
+      else str = str.concat(`\\${pos.toUpperCase()}`)
+    }
+  })
+  if (str.length === 0 && player.util) str = str.concat('UTIL')
+  const pitchingPos = ['sp', 'rp']
+  pitchingPos.forEach(pos => {
+    if (player[pos as keyof Player]) {
+      if (str.length === 0) str = str.concat(pos.toUpperCase())
+      else str = str.concat(`\\${pos.toUpperCase()}`)
+    }
+  })
+  return str
 }
