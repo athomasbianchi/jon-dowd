@@ -9,6 +9,8 @@ export type Player = {
   team: string
   contract_dollars: number
   contract_years: number
+  contract_type: string
+  aaa_options: boolean
   player_mlb_org: string
   player_pos: string
   team_id: number
@@ -30,10 +32,13 @@ type PlayersApiResponse = {
 }
 
 export const playersApiSlice = createApi({
+  reducerPath: 'playersApi',
   baseQuery: fakeBaseQuery(),
   endpoints: (builder) => ({
     getPlayers: builder.query<PlayersApiResponse, void>({
       queryFn: async () => {
+        // TODO turn back on pagination
+
         // let returnData: Player[] = []
         // let fetching = true
         // let range_low = 0
@@ -44,8 +49,6 @@ export const playersApiSlice = createApi({
             .from('players')
             .select("*")
             .order('fp_e', { ascending: false, nullsFirst: false })
-            // .order('contract_dollars', { ascending: false, nullsFirst: false })
-            // .order('contract_years', { ascending: false, nullsFirst: false })
             // .range(range_low, range_high)
           if (error) {
             throw new Error(error.message || "Unknown error occurred while fetching players");
