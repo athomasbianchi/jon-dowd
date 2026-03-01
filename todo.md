@@ -11,6 +11,7 @@ DATA_DONE
 
 FRONTEND DONE
 - Players View
+- AAA View
 
 
 CURRENT
@@ -29,6 +30,8 @@ Teams View
 FAs
 Auction View
 Arb View
+Draft Views
+
 Mobile Views
 
 DATA_NEXT

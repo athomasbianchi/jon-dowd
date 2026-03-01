@@ -1,6 +1,4 @@
 import type { JSX } from "react"
-// import { useState } from "react"
-// import clsx from "clsx"
 import { useGetAaaContractsQuery, useUpdateAAAContractMutation } from "./aaaApiSlice"
 
 const TEAMS: Record<string, string> = {
@@ -30,7 +28,7 @@ export const AAATracker = (): JSX.Element | null => {
   if (!isSuccess) {
     return (
       <div>
-        Hi
+        Loading...
       </div>
     )
   }
@@ -47,27 +45,24 @@ export const AAATracker = (): JSX.Element | null => {
 const AAAPlayer = ({ player }) => {
   // const player = useGetAaaContractsQuery()
   return (
-    <div key={player.tj_id}>
-      {player.players.name}
-      {TEAMS[player.team_id]}
-      {player.players.player_pos}
-      {player.players.player_mlb_org}
-      {player.picked_up}
+    <div key={player.tj_id} className="flex flex-row">
+      <div className="w-1/6">{player.players.name}</div>
+      <div className="w-1/20">{TEAMS[player.team_id]}</div>
+      <div className="w-1/20">{player.players.player_pos}</div>
+      <div className="w-1/20">{player.players.player_mlb_org}</div>
+      <div className="w-1/20">{player.picked_up}</div>
+      <div className="w-1/20">{player.players.total_25}</div>
       <PickupSelect tj_id={player.tj_id} picked_up={player.picked_up} />
     </div>)
 }
 
 const PickupSelect = ({ tj_id, picked_up }: { tj_id: string, picked_up: boolean | null }) => {
-  // const [value, setValue] = useS
-  const [updateAaaContract, result ] = useUpdateAAAContractMutation();
-  console.log(result)
+  const [updateAaaContract, result] = useUpdateAAAContractMutation();
 
   let value = picked_up === null ? 'tbd' : picked_up ? 'picked_up' : 'declined';
 
 
   const handleChange = async (e) => {
-    console.log(tj_id)
-    console.log(e.target.value)
     const pickup_obj = {
       'picked_up': true,
       'declined': false,
@@ -75,28 +70,23 @@ const PickupSelect = ({ tj_id, picked_up }: { tj_id: string, picked_up: boolean 
     }
 
     try {
-      // const change = await updateAaaContract({
-       await updateAaaContract({
+      await updateAaaContract({
         tj_id,
         picked_up: pickup_obj[e.target.value]
       }).unwrap().then((payload) => console.log(payload))
-      // console.log(change) 
-      // console.log(data)
     } catch (err) {
       console.error(err)
     }
   }
-  // console.log(isLoading)
 
 
   return (
     <>
-    <select onChange={handleChange} value={value}>
-      <option value='tbd'>TBD</option>
-      <option value='picked_up'>Pick Up</option>
-      <option value='declined'>Decline</option>
-    </select>
-    <div>{result.status}</div>
+      <select onChange={handleChange} value={value}>
+        <option value='tbd'>TBD</option>
+        <option value='picked_up'>Pick Up</option>
+        <option value='declined'>Decline</option>
+      </select>
     </>
   )
 } 

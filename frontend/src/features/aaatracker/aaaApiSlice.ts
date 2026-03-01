@@ -21,10 +21,9 @@ export const aaaApiSlice = createApi({
       queryFn: async () => {
         const { data, error } = await supabase
           .from('aaa_26')
-          .select("*, players!inner(tj_id, name, player_pos, player_mlb_org)")
+          .select("*, players!inner(tj_id, name, player_pos, player_mlb_org, fp_e)")
           .order('team_id', { ascending: true })
-          .order('tj_id', { ascending: false, nullsFirst: false })
-          // .select("*")
+          // .order('total_25', { ascending: false, nullsFirst: false })
         if (error) {
           throw new Error(error.message || "Unknown error occurred while fetching AAA contracts");
         }

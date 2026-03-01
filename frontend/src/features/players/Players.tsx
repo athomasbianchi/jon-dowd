@@ -177,7 +177,7 @@ type FaPlayerProps = {
   player: Player
 }
 
-const TEAMS: Record<string, string> = {
+export const TEAMS: Record<string, string> = {
   '1': 'CR',
   '2': 'SF',
   '3': 'BS',
@@ -208,7 +208,7 @@ const FaPlayer = ({ player }: FaPlayerProps): JSX.Element => {
   )
 }
 
-const playerPosString = (player: Player): string => {
+export const playerPosString = (player: Player): string => {
   const hittingPos = ['c', '3b', '2b', 'ss', '1b', 'of']
   let str = '';
   hittingPos.forEach(pos => {
