@@ -1,53 +1,63 @@
 import { type JSX, useReducer } from "react"
-import { useGetTeamRosterQuery } from "./rosterApiSlice"
+import { useGetTeamRosterQuery, useUpdateRosterSlotMutation } from "./rosterApiSlice"
 import { TEAMS, playerPosString } from '../players/Players'
 
 const CAP = 100
 
+// # SLOTS
+// # 0 C
+// # 1 1B
+// # 2 2B
+// # 3 3B
+// # 4 SS
+// # 5 OF
+// # 6 MI
+// # 7 CI
+// # 8 LF
+// # 9 CF
+// # 10 RF
+// # 11 DH
+// # 12 UTIL
+// # 13 P
+// # 14 SP
+// # 15 RP
+// # 16 BE
+// # 17 IL
+// # 19 IF
+
 // roster def
-// c 1
-// 1b 1
-// 2b 1
-// 3b 1
-// ss 1
-// of 3
-// util 1
-// sp 5
-// rp 2
-// be 7
-// aaa 12
-// aa 15
+// c 1 (0)
+// 1b 1 (1)
+// 2b 1 (2)
+// 3b 1 (3)
+// ss 1 (4)
+// of 3 (5)
+// util (12)
+// sp 5 (14)
+// rp 2 (15)
+// be 7 (16)
+// aaa 12 (20)
+// aa 15 (21)
+// IL (17)
+// 60-Day IL (60)
 
-const rosterReducer = (state, action) => {
-  console.log(action)
-  switch (action.type) {
-    case 'setSpot':
-      return {
-        ...state,
-        [action.payload.pos]: [...state[action.payload.pos], action.payload.tj_id]
-      }
-
-    // case
-    // if (action.type === ) {
-
-    // }
-  }
+const ROSTER_SPOTS = {
+  c: 0,
+  '1b': 1,
+  '2b': 2,
+  '3b': 3,
+  ss: 4,
+  of: 5,
+  util: 12,
+  sp: 14,
+  rp: 15,
+  be: 16,
+  aaa: 20,
+  aa: 21,
+  il: 17,
+  '60': 60
 }
 
-const initState = {
-  c: [null],
-  '1b': [null],
-  '2b': [null],
-  ss: [null],
-  '3b': [null],
-  util: [null],
-  of: new Array(3).fill(null),
-  sp: new Array(5).fill(null),
-  rp: new Array(2).fill(null),
-  be: [],
-  aaa: [],
-  aa: [],
-}
 
 export const Team = ({ team_id }: { team_id: number }): JSX.Element | null => {
   const {
@@ -58,10 +68,7 @@ export const Team = ({ team_id }: { team_id: number }): JSX.Element | null => {
     isSuccess,
     status
   } = useGetTeamRosterQuery(team_id)
-  const [state, dispatch] = useReducer(rosterReducer, initState)
   if (!isSuccess) return <div>Loading...</div>
-  console.log(state)
-
 
   const sal = data.map(x => x.contract_dollars).reduce((a, b) => a + b)
 
@@ -69,50 +76,17 @@ export const Team = ({ team_id }: { team_id: number }): JSX.Element | null => {
 
   return (
     <div>
-      <div>{TEAMS[team_id]}</div>
-      <div>{sal}</div>
-      <div>{CAP - sal}</div>
-      {state['c'].map(tj_id => {
-        return (<div>C</div>)
-      })}
-      {state['1b'].map(tj_id => {
-        return (<div>1B</div>)
-      })}
-      {state['2b'].map(tj_id => {
-        return (<div>2B</div>)
-      })}
-      {state['3b'].map(tj_id => {
-        return (<div>3B</div>)
-      })}
-      {state['ss'].map(tj_id => {
-        return (<div>SS</div>)
-      })}
-      {state.of.map(tj_id => {
-        return (<div>OF</div>)
-      })}
-      {state.util.map(tj_id => {
-        return (<div>UTIL</div>)
-      })}
       {sorted.map(x => {
         return (
-          <div
-            key={x.tj_id}
-          >
-            {x.name}
-            {' '}{playerPosString(x)}
-            {' '}{x.contract_dollars}
-            {' '}<PosSelector
-              player={x}
-              dispatch={dispatch}
-            />
-          </div>
+          <Player player={x} />
         )
       })}
     </div>
   )
 }
 
-const PosSelector = ({player, dispatch}) => {
+const PosSelector = ({ player }) => {
+  const [updateRosterSlot, result] = useUpdateRosterSlotMutation();
   const pos = {
     c: player.c,
     '1b': player['1b'],
@@ -125,16 +99,17 @@ const PosSelector = ({player, dispatch}) => {
     rp: player.rp
   }
   const posArray = Object.keys(pos).filter(x => pos[x])
-  
-  const handleSelect = (e) => {
-    dispatch({type: 'setSpot', payload: {
-      pos: e.target.value,
-      tj_id: player.tj_id
-    }})
+
+  const handleRosterSlot = async (e) => {
+    const result = await updateRosterSlot({
+      contract_id: player.contract_id,
+      roster_spot: ROSTER_SPOTS[e.target.value]
+    }).unwrap().then((payload) => console.log(payload))
   }
 
   return (
-    <select onChange={(e) => handleSelect(e)}>
+    <select onChange={(e) => handleRosterSlot(e)}>
+      <option value="">choose a position</option>
       {posArray.map(pos => (
         <option value={pos}>{pos.toUpperCase()}</option>
       ))}
@@ -142,6 +117,22 @@ const PosSelector = ({player, dispatch}) => {
       <option value="aaa">AAA</option>
       <option value="aa">AA</option>
     </select>
+  )
+}
+
+const Player = ({ player }) => {
+  return (
+    <div
+      key={player.tj_id}
+    >
+      {player.name}
+      {' '}{playerPosString(player)}
+      {' '}{player.contract_dollars}
+      {' '}{player.roster_spot}
+      {' '}<PosSelector
+        player={player}
+      />
+    </div>
   )
 }
 

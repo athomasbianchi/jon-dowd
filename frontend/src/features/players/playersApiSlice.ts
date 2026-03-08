@@ -10,6 +10,7 @@ export type Player = {
   contract_dollars: number
   contract_years: number
   contract_type: string
+  roster_spot: number
   aaa_options: boolean
   player_mlb_org: string
   player_pos: string

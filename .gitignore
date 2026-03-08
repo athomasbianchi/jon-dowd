@@ -1,4 +1,5 @@
 .env
+.venv
 input_download
 .DS_Store
 __pycache__
