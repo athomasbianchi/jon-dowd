@@ -1,4 +1,4 @@
-DATA_DONE
+# DATA_DONE
 
 - Created Player Universe with tjid (cleaned)
 - Cleaned Existing Contracts with tjid (cleaned)
@@ -9,16 +9,15 @@ DATA_DONE
 - Projections
 - Contracts
 
-FRONTEND DONE
+# FRONTEND DONE
 - Players View
 - AAA View
 
+## Post Draft
+- Add new contracts
+  - Split into AAA / AA / MLB Tables
+  - Reconsider Roster
 
-CURRENT
-Frontend
-* Create Projections Tabl
-* Add ESPN & fg projections to player view
-* Update org / team with 
 
 
 FRONTEND
